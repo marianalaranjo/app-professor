@@ -5,13 +5,19 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from datetime import datetime
+from google.cloud import firestore
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
+import json
 
 ## CONFIG
 
-def logSession(session_history, filename):
-    f = open(filename, "a")
-    f.write("{0} -- {1}\n".format(datetime.now().strftime("%Y-%m-%d %H:%M"), session_history))
-    f.close()
+key_dict = json.loads(st.secrets["textkey"])
+cred = credentials.Certificate(key_dict)
+
+db = firestore.client()
+
 
 prompt_template_tutor=ChatPromptTemplate.from_messages([
     ("system", "Age como um auxiliar de professores de programação proficiente na criação de exercícios."
@@ -109,4 +115,8 @@ with st.container(height=620):
 
 
 if st.session_state.professor != []:
-    logSession(st.session_state, f"logProfessor{id}.txt")
+    doc_ref = db.collection("logs").document(f"logProfessor{id}")
+    doc_ref.set({"professor": st.session_state.professor,
+                "setup": st.session_state.setup,
+                "messages": st.session_state.messages
+                })
