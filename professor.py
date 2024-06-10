@@ -16,6 +16,8 @@ import json
 key_dict = json.loads(st.secrets["textkey"])
 cred = credentials.Certificate(key_dict)
 
+app = firebase_admin.initialize_app(cred)
+
 db = firestore.client()
 
 
@@ -113,7 +115,7 @@ with st.container(height=620):
         st.session_state.messages.append({"role":"assistant", "content":ai_response})
         st.rerun()
 
-
+##LOGS
 if st.session_state.professor != []:
     doc_ref = db.collection("logs").document(f"logProfessor{id}")
     doc_ref.set({"professor": st.session_state.professor,
