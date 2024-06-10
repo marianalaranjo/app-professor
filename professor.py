@@ -16,8 +16,6 @@ import json
 key_dict = json.loads(st.secrets["textkey"])
 cred = credentials.Certificate(key_dict)
 
-app = firebase_admin.initialize_app(cred)
-
 db = firestore.client()
 
 
