@@ -13,8 +13,10 @@ import json
 
 ## CONFIG
 
-key_dict = json.loads(st.secrets["textkey"])
-cred = credentials.Certificate(key_dict)
+if not firebase_admin._apps:
+    key_dict = json.loads(st.secrets["textkey"])
+    cred = credentials.Certificate(key_dict)
+    app=firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
@@ -53,7 +55,8 @@ def professor():
 
 if "professor" not in st.session_state:
     st.session_state.professor = []
-    professor()
+    while st.session_state.professor == []:
+        professor()
 
 for s in st.session_state.professor:
         name = s["Name"]
