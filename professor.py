@@ -44,6 +44,10 @@ chain = prompt_template_tutor | llm | output_parser
 st.set_page_config(page_title="App Professor", page_icon=":robot:", layout="wide")
 st.title("App Professor")
 
+
+if "professor" not in st.session_state:
+    st.session_state.professor = []
+
 ## LOGIN
 @st.experimental_dialog("Login")
 def professor():
@@ -53,10 +57,8 @@ def professor():
         st.session_state.professor.append({"Name": name, "IST-id": id})
         st.rerun()
 
-if "professor" not in st.session_state:
-    st.session_state.professor = []
-    while st.session_state.professor == []:
-        professor()
+if st.session_state.professor == []:
+    professor()
 
 for s in st.session_state.professor:
         name = s["Name"]
